@@ -10,7 +10,7 @@
   <br>
   <!-- PROJECT TAGLINE - Replace with your project description -->
   <p align="center">
-    <b>Stop Kontango Open Source Project</b><br>
+    <b>Kontango Open Source Project</b><br>
     Automox unifies Terraform, Ansible, Bash, Cloud-Init, Ignition, and Systemd into one powerful platform.
   </p>
   <br>
