@@ -1,4 +1,3 @@
-
 <br>
 
 <div align="center">
@@ -31,20 +30,32 @@
   </a>
 </p>
 
-Core Philosophy
-From day one, Kontango has been guided by several fundamental principles:
-Services Over Products: Rather than selling proprietary software products, Kontango provides services that help clients build and maintain their own on-premise platforms. This approach ensures genuine ownership and eliminates ongoing dependency on vendor subscriptions.
-Bridging Technical Divides: Every solution is designed to serve both the technical user who needs sophisticated functionality and the everyman who requires intuitive, accessible interfaces. Kontango specializes in making complex industrial-grade systems comprehensible and usable at the residential level.
-
-Sustainable Innovation: Technology recycling and upcycling aren't just environmental choices—they're strategic advantages. By maximizing the potential of existing technology, Kontango delivers robust solutions more efficiently and cost-effectively than building everything from scratch.
-
-On-Premise Empowerment: True technological independence comes from owning your infrastructure. Kontango's platforms are designed to run where you need them—whether that's a factory floor or a home office—without external dependencies or cloud service requirements.
-Accessibility Without Compromise: Powerful development capabilities should be truly accessible, not just in terms of technical complexity, but also financially accessible to individuals and organizations of all sizes.
-Looking Forward
-
-Since 2017, Kontango has remained committed to this founding vision from their Colorado base—providing services that help organizations build something better in a world where SaaS subscriptions have become the default solution to every problem. Our journey continues to be driven by the same principles that sparked our creation: the belief that powerful technology shouldn't come with a monthly tax on innovation, and that the gap between technical complexity and everyday usability can and should be bridged.
-
 The story of Kontango is ultimately about sustainable choice—the choice to build services rather than sell products, to recycle and upcycle rather than constantly rebuild, to serve both technical experts and everyday users with equal respect, and to prove that there's a better way forward that puts ownership and independence back in the hands of the people who use the technology.
+
+
+# Upcoming Projects
+
+<div style="display: flex; flex-direction: column; gap: 1rem; font-family: sans-serif;"> <div style="background: #f0f4ff; padding: 1rem; border-left: 5px solid #4f46e5; border-radius: 6px;"> <strong>
+
+✨ Kreator</strong><br/>
+
+ <em>End-to-end provisioning tool for Proxmox</em><br/> Provisions LXC, LXD, and VM nodes via PXE. Uses external secrets and automates infrastructure configs. </div> <div style="background: #fff8f0; padding: 1rem; border-left: 5px solid #f97316; border-radius: 6px;"> <strong>
+
+🌐 Omni-Kluster</strong><br/> 
+
+<em>Effortless multi-node cluster setup</em><br/> Built on Kreator. Define cluster size and network infra with a few clicks (and a bit of hope). </div> <div style="background: #f0fff4; padding: 1rem; border-left: 5px solid #10b981; border-radius: 6px;"> <strong>
+
+📥 Downloadarr</strong><br/> 
+
+<em>PXE server + ISO provisioning made easy</em><br/> A self-hosted provisioning tool removing the need for sketchy web-based ISO setups. </div> <div style="background: #fef2f2; padding: 1rem; border-left: 5px solid #ef4444; border-radius: 6px;"> <strong>
+
+❄️ HVAC-d</strong><br/> 
+
+<em>Our journey into the wild world of hardware</em><br/> An experiment in diagnostics, airflow, and attic adventures. </div> <div style="background: #f5f3ff; padding: 1rem; border-left: 5px solid #8b5cf6; border-radius: 6px;"> <strong>
+
+📚 Storytime</strong>
+
+<br/> <em>The origin story of our team</em><br/> A historical (and possibly dramatic) look at how we became who we are. </div> </div>
 
 
 <br>
