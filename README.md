@@ -3,14 +3,14 @@
   <br>
   <br>
   <a href="https://git.kontango.org">
-    <img src="https://img.shields.io/badge/$$$$$-000000?style=for-the-badge&labelColor=000000&color=000000&logoColor=white" alt="Automox" height="80">
+    <img src="https://img.shields.io/badge/KONOSS-000000?style=for-the-badge&labelColor=000000&color=000000&logoColor=white" alt="Automox" height="80">
   </a>
   <br>
   <br>
   <br>
   <!-- PROJECT TAGLINE - Replace with your project description -->
   <p align="center">
-    <b>Stop juggling six different automation tools.</b><br>
+    <b>Stop Kontango Open Source Project</b><br>
     Automox unifies Terraform, Ansible, Bash, Cloud-Init, Ignition, and Systemd into one powerful platform.
   </p>
   <br>
