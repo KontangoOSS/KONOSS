@@ -30,9 +30,6 @@
   </a>
 </p>
 
-The story of Kontango is ultimately about sustainable choice—the choice to build services rather than sell products, to recycle and upcycle rather than constantly rebuild, to serve both technical experts and everyday users with equal respect, and to prove that there's a better way forward that puts ownership and independence back in the hands of the people who use the technology.
-
-
 # Upcoming Projects
 
 <div style="display: flex; flex-direction: column; gap: 1rem; font-family: sans-serif;"> <div style="background: #f0f4ff; padding: 1rem; border-left: 5px solid #4f46e5; border-radius: 6px;"> <strong>
