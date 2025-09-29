@@ -1,0 +1,14 @@
+#!/bin/bash
+#     ⚠️ ☢️  RADIATION DETECTED ☢️ ⚠️
+#    ╔════════════════════════════╗
+#    ║ ╦╔═╔═╗╔╗╔╔═╗╔═╗╔═╗        ║
+#    ║ ╠╩╗║ ║║║║║ ║╚═╗╚═╗  ☢️    ║
+#    ║ ╩ ╩╚═╝╝╚╝╚═╝╚═╝╚═╝        ║
+#    ╠════════════════════════════╣
+#    ║ ⚠️  DEPLOYING NUCLEAR GRADE ║
+#    ║     INFRASTRUCTURE         ║
+#    ╚════════════════════════════╝
+
+echo "Initiating reactor core..."
+echo "Control rods: REMOVED"
+echo "Vendor locks: MELTING"
