@@ -1,0 +1,44 @@
+name: Simple Test - Get Machine Info
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-action:
+    name: Simple Action Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout KONOSS repository
+        uses: actions/checkout@v4
+
+      - name: List action directory
+        run: |
+          echo "Checking if action exists..."
+          ls -la OPS/actions/get-machine-info/
+          echo ""
+          echo "Checking action.yml..."
+          cat OPS/actions/get-machine-info/action.yml | head -20
+
+      - name: Run Get Machine Info
+        id: machine
+        uses: ./OPS/actions/get-machine-info
+        with:
+          config: test-machine.env
+
+      - name: Verify output
+        run: |
+          echo "Checking if config file was created..."
+          ls -la test-machine.env || echo "Config file not found!"
+
+          if [ -f test-machine.env ]; then
+            echo "Config file contents:"
+            cat test-machine.env | grep "MACHINE_"
+          fi
+
+      - name: Display collected info
+        run: |
+          source test-machine.env
+          echo "✅ Success! Machine info collected:"
+          echo "  Hostname: $MACHINE_HOSTNAME"
+          echo "  OS: $MACHINE_OS"
+          echo "  CPU Cores: $MACHINE_CPU_COUNT"
