@@ -26,48 +26,144 @@ jobs:
     name: Platform Health Check
     runs-on: ubuntu-latest
     outputs:
-      status: ${{ steps.check.outputs.status }}
-      timestamp: ${{ steps.check.outputs.timestamp }}
+      status: ${{ steps.health.outputs.status }}
+      timestamp: ${{ steps.health.outputs.timestamp }}
 
     steps:
-      - name: Run KONOSS health check
-        id: check
+      - name: Display current time
+        id: current-time
         run: |
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "🚀 KONOSS Platform Health Check"
+          echo "⏰ Workflow Execution Time"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          CURRENT_TIME_UTC=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          CURRENT_TIME_ISO=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          CURRENT_EPOCH=$(date +%s)
+
+          echo "🌍 Current Time (UTC): $CURRENT_TIME_UTC"
+          echo "📅 ISO 8601 Format: $CURRENT_TIME_ISO"
+          echo "🔢 Unix Timestamp: $CURRENT_EPOCH"
           echo ""
 
-          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          echo "⏰ Time: $TIMESTAMP"
-          echo "💬 Message: ${{ inputs.custom-message }}"
-          echo ""
+          # Set outputs for other steps to use
+          echo "utc-time=$CURRENT_TIME_UTC" >> $GITHUB_OUTPUT
+          echo "iso-time=$CURRENT_TIME_ISO" >> $GITHUB_OUTPUT
+          echo "epoch=$CURRENT_EPOCH" >> $GITHUB_OUTPUT
 
-          if [ "${{ inputs.show-system-info }}" = "true" ]; then
-            echo "📊 System Information:"
-            echo "  • OS: $(uname -s)"
-            echo "  • Architecture: $(uname -m)"
-            echo "  • Kernel: $(uname -r)"
-            echo "  • Hostname: $(hostname)"
-            echo ""
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Pre-check environment
+        id: precheck
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔍 Pre-Check: Validating Environment"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          # Verify health-check action exists
+          if [ -f ".gitea/actions/health-check/action.yml" ]; then
+            echo "✅ Health check action found"
+            echo "action-exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Health check action not found"
+            echo "action-exists=false" >> $GITHUB_OUTPUT
+            exit 1
           fi
 
-          echo "✅ Health check passed"
+          # Detect workflow context
+          if [ "${{ github.event_name }}" = "workflow_call" ]; then
+            echo "📞 Context: Reusable workflow call"
+          else
+            echo "🔄 Context: Direct execution"
+          fi
+
+          echo ""
+
+      - name: Run KONOSS health check action
+        id: health
+        uses: ./.gitea/actions/health-check
+        with:
+          message: ${{ inputs.custom-message }}
+          show-system-info: ${{ inputs.show-system-info }}
+
+      - name: Validate health check results
+        id: validate
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🔎 Validation: Health Check Results"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          STATUS="${{ steps.health.outputs.status }}"
+          TIMESTAMP="${{ steps.health.outputs.timestamp }}"
+
+          echo "📊 Result Analysis:"
+          echo "  • Status: $STATUS"
+          echo "  • Timestamp: $TIMESTAMP"
+          echo "  • Message: ${{ inputs.custom-message }}"
+          echo "  • System Info Shown: ${{ inputs.show-system-info }}"
+          echo ""
+
+          # Validate status
+          if [ "$STATUS" = "healthy" ]; then
+            echo "✅ Status validation: PASSED"
+          else
+            echo "❌ Status validation: FAILED"
+            exit 1
+          fi
+
+          # Validate timestamp format
+          if [[ "$TIMESTAMP" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}\ [0-9]{2}:[0-9]{2}:[0-9]{2}\ UTC$ ]]; then
+            echo "✅ Timestamp validation: PASSED"
+          else
+            echo "⚠️  Timestamp validation: WARNING (unexpected format)"
+          fi
+
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+      - name: Generate detailed summary
+        if: always()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📋 Workflow Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Execution Details:"
+          echo "  • Workflow: ${{ github.workflow }}"
+          echo "  • Run ID: ${{ github.run_id }}"
+          echo "  • Run Number: ${{ github.run_number }}"
+          echo "  • Attempt: ${{ github.run_attempt }}"
+          echo ""
+          echo "Repository Information:"
+          echo "  • Repository: ${{ github.repository }}"
+          echo "  • Branch: ${{ github.ref_name }}"
+          echo "  • Commit: ${{ github.sha }}"
+          echo "  • Triggered by: ${{ github.actor }}"
+          echo "  • Event: ${{ github.event_name }}"
+          echo ""
+          echo "Health Check Results:"
+          echo "  • Status: ${{ steps.health.outputs.status }}"
+          echo "  • Timestamp: ${{ steps.health.outputs.timestamp }}"
+          echo "  • Action Exists: ${{ steps.precheck.outputs.action-exists }}"
+          echo ""
+          echo "Timing Information:"
+          echo "  • Workflow Started: ${{ steps.current-time.outputs.utc-time }}"
+          echo "  • ISO Format: ${{ steps.current-time.outputs.iso-time }}"
+          echo "  • Unix Epoch: ${{ steps.current-time.outputs.epoch }}"
+          echo ""
+
+          # Determine overall status
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Overall Status: SUCCESS"
+          else
+            echo "❌ Overall Status: FAILED"
+          fi
+
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "🎯 Powered by KONOSS Platform"
           echo "   https://konoss.org"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-          # Set outputs
-          echo "status=healthy" >> $GITHUB_OUTPUT
-          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
-
-      - name: Summary
-        run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Workflow completed successfully"
-          echo "🔗 Repository: ${{ github.repository }}"
-          echo "🌿 Branch: ${{ github.ref_name }}"
-          echo "👤 Triggered by: ${{ github.actor }}"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
