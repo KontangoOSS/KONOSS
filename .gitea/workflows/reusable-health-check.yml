@@ -41,31 +41,3 @@ jobs:
         with:
           message: ${{ inputs.custom-message }}
           show-system-info: ${{ inputs.show-system-info }}
-
-      - name: Generate detailed summary
-        if: always()
-        run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📋 Workflow Summary"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo ""
-          echo "Workflow Context:"
-          echo "  • Repository: ${{ github.repository }}"
-          echo "  • Branch: ${{ github.ref_name }}"
-          echo "  • Triggered by: ${{ github.actor }}"
-          echo "  • Event: ${{ github.event_name }}"
-          echo ""
-          echo "Health Check Results:"
-          echo "  • Status: ${{ steps.health.outputs.status }}"
-          echo "  • Timestamp: ${{ steps.health.outputs.timestamp }}"
-          echo ""
-
-          # Determine overall status
-          if [ "${{ job.status }}" = "success" ]; then
-            echo "✅ Overall Status: SUCCESS"
-          else
-            echo "❌ Overall Status: FAILED"
-          fi
-
-          echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
