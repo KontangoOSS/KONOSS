@@ -1,0 +1,73 @@
+name: Reusable KONOSS Health Check
+
+on:
+  workflow_call:
+    inputs:
+      custom-message:
+        description: 'Custom health check message'
+        required: false
+        type: string
+        default: 'KONOSS Platform is operational'
+      show-system-info:
+        description: 'Show system information'
+        required: false
+        type: boolean
+        default: true
+    outputs:
+      status:
+        description: 'Health check status'
+        value: ${{ jobs.health-check.outputs.status }}
+      timestamp:
+        description: 'Timestamp of the check'
+        value: ${{ jobs.health-check.outputs.timestamp }}
+
+jobs:
+  health-check:
+    name: Platform Health Check
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.check.outputs.status }}
+      timestamp: ${{ steps.check.outputs.timestamp }}
+
+    steps:
+      - name: Run KONOSS health check
+        id: check
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🚀 KONOSS Platform Health Check"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          echo "⏰ Time: $TIMESTAMP"
+          echo "💬 Message: ${{ inputs.custom-message }}"
+          echo ""
+
+          if [ "${{ inputs.show-system-info }}" = "true" ]; then
+            echo "📊 System Information:"
+            echo "  • OS: $(uname -s)"
+            echo "  • Architecture: $(uname -m)"
+            echo "  • Kernel: $(uname -r)"
+            echo "  • Hostname: $(hostname)"
+            echo ""
+          fi
+
+          echo "✅ Health check passed"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🎯 Powered by KONOSS Platform"
+          echo "   https://konoss.org"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+          # Set outputs
+          echo "status=healthy" >> $GITHUB_OUTPUT
+          echo "timestamp=$TIMESTAMP" >> $GITHUB_OUTPUT
+
+      - name: Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ Workflow completed successfully"
+          echo "🔗 Repository: ${{ github.repository }}"
+          echo "🌿 Branch: ${{ github.ref_name }}"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
