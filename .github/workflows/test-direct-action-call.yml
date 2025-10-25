@@ -1,0 +1,54 @@
+name: Test Direct Action Call
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/actions/get-machine-info/**'
+
+jobs:
+  # Test calling action directly from GitHub without checkout
+  test-direct-call:
+    name: Direct Call (No Checkout)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Machine Info (Direct from GitHub!)
+        id: machine
+        uses: KontangoOSS/KONOSS/.github/actions/get-machine-info@main
+        with:
+          config: machine-info.env
+
+      - name: Verify it worked
+        run: |
+          echo "✅ Action called directly from GitHub!"
+          source machine-info.env
+          echo "Hostname: $MACHINE_HOSTNAME"
+          echo "OS: $MACHINE_OS"
+          echo "CPU: $MACHINE_CPU_COUNT cores"
+          echo "Memory: ${MACHINE_MEM_TOTAL_GB}GB"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: machine-info-direct
+          path: machine-info.env
+
+  # Test from local checkout (for comparison)
+  test-local-call:
+    name: Local Call (With Checkout)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get Machine Info (From local)
+        uses: ./.github/actions/get-machine-info
+        with:
+          config: machine-local.env
+
+      - name: Verify it worked
+        run: |
+          echo "✅ Action called from local checkout"
+          source machine-local.env
+          echo "Hostname: $MACHINE_HOSTNAME"

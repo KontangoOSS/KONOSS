@@ -31,19 +31,24 @@ A simple, self-contained action that collects current machine/system information
 
 ## Usage
 
-### From GitHub (Recommended)
+### From GitHub (Recommended) ✨
 
-Use the action from GitHub by checking out the repository first:
+Use the action directly from GitHub - **no checkout required**:
 
 ```yaml
-- name: Checkout KONOSS
-  uses: actions/checkout@v4
-  with:
-    repository: KontangoOSS/KONOSS
-    ref: main
-
 - name: Get Machine Info
-  uses: ./OPS/actions/get-machine-info
+  uses: KontangoOSS/KONOSS/.github/actions/get-machine-info@main
+  with:
+    config: machine-info.env
+```
+
+### With Specific Version
+
+Pin to a specific version for production:
+
+```yaml
+- name: Get Machine Info
+  uses: KontangoOSS/KONOSS/.github/actions/get-machine-info@v1.0.0
   with:
     config: machine-info.env
 ```
@@ -54,7 +59,7 @@ If you're already in the KONOSS repository:
 
 ```yaml
 - name: Get Machine Info
-  uses: ./OPS/actions/get-machine-info
+  uses: ./.github/actions/get-machine-info
   with:
     config: machine-info.env
 ```
@@ -64,22 +69,17 @@ If you're already in the KONOSS repository:
 Collect machine info and use it in subsequent actions:
 
 ```yaml
-- name: Checkout KONOSS
-  uses: actions/checkout@v4
-  with:
-    repository: KontangoOSS/KONOSS
-    ref: main
-
 - name: Collect Machine Info
   id: machine
-  uses: ./OPS/actions/get-machine-info
+  uses: KontangoOSS/KONOSS/.github/actions/get-machine-info@main
   with:
     config: .env
 
 - name: Use Machine Context
   run: |
     source ${{ steps.machine.outputs.config }}
-    echo "Running on: $MACHINE_HOSTNAME"
+    echo "Running on: $MACHINE_HOSTNAME ($MACHINE_IP)"
+    echo "Resources: ${MACHINE_CPU_COUNT} cores, ${MACHINE_MEM_TOTAL_GB}GB RAM"
 ```
 
 The subsequent steps will have access to all `MACHINE_*` variables.
@@ -89,14 +89,8 @@ The subsequent steps will have access to all `MACHINE_*` variables.
 Just collect and display the info:
 
 ```yaml
-- name: Checkout KONOSS
-  uses: actions/checkout@v4
-  with:
-    repository: KontangoOSS/KONOSS
-    ref: main
-
 - name: Show Machine Info
-  uses: ./OPS/actions/get-machine-info
+  uses: KontangoOSS/KONOSS/.github/actions/get-machine-info@main
 ```
 
 Variables are still exported for use in the same workflow.
