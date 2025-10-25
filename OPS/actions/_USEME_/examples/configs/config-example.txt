@@ -1,0 +1,27 @@
+# Example .txt Configuration File
+# =============================================================================
+# This file demonstrates the expected format for .txt configuration files
+# Fields are validated against action-spec.json (config_schema.fields)
+# Format is identical to .env files (key=value pairs)
+# =============================================================================
+
+# Required Fields (defined in action-spec.json)
+# -----------------------------------------------------------------------------
+EXAMPLE_FIELD=example_value_here
+ANOTHER_FIELD=another_value_here
+
+# Optional Fields (defined in action-spec.json)
+# -----------------------------------------------------------------------------
+OPTIONAL_FIELD=optional_value_here
+
+# Notes:
+# - Required fields MUST be present or validation will fail
+# - Optional fields can be omitted
+# - Values can be quoted or unquoted
+# - Comments (lines starting with #) are ignored
+# - Empty lines are ignored
+#
+# To customize for your action:
+# 1. Update action-spec.json config_schema.fields with your fields
+# 2. Replace EXAMPLE_FIELD, ANOTHER_FIELD with your actual field names
+# 3. Update this example file to match your schema

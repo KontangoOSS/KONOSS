@@ -31,18 +31,27 @@ A simple, self-contained action that collects current machine/system information
 
 ## Usage
 
-### Basic Usage
+### From GitHub (Recommended)
 
-Collect machine info and save to a config file:
+Use the action directly from GitHub:
 
 ```yaml
 - name: Get Machine Info
-  uses: ./actions/get-machine-info
+  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
   with:
     config: machine-info.env
 ```
 
-This will create/update `machine-info.env` with all the machine information.
+### From Local Repository
+
+If you've cloned the repository:
+
+```yaml
+- name: Get Machine Info
+  uses: ./OPS/actions/get-machine-info
+  with:
+    config: machine-info.env
+```
 
 ### Chaining with Other Actions
 
@@ -51,12 +60,12 @@ Collect machine info and use it in subsequent actions:
 ```yaml
 - name: Collect Machine Info
   id: machine
-  uses: ./actions/get-machine-info
+  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
   with:
     config: .env
 
 - name: Deploy with Machine Context
-  uses: ./actions/deploy-app
+  uses: KontangoOSS/KONOSS/OPS/actions/deploy-app@main
   with:
     config: ${{ steps.machine.outputs.config }}
 ```
@@ -69,7 +78,7 @@ Just collect and display the info:
 
 ```yaml
 - name: Show Machine Info
-  uses: ./actions/get-machine-info
+  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
 ```
 
 Variables are still exported for use in the same workflow.

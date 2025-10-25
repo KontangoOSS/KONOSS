@@ -58,17 +58,21 @@
   },
 
   "usage": {
-    "basic": {
-      "description": "Collect machine info and save to .env file",
-      "example": "- name: Get Machine Info\n  uses: ./actions/get-machine-info\n  with:\n    config: machine-info.env"
+    "github": {
+      "description": "Use action from GitHub (recommended)",
+      "example": "- name: Get Machine Info\n  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main\n  with:\n    config: machine-info.env"
+    },
+    "local": {
+      "description": "Use action from local repository",
+      "example": "- name: Get Machine Info\n  uses: ./OPS/actions/get-machine-info\n  with:\n    config: machine-info.env"
     },
     "chaining": {
       "description": "Collect machine info then use in another action",
-      "example": "- name: Get Machine Info\n  id: machine\n  uses: ./actions/get-machine-info\n  with:\n    config: .env\n\n- name: Use Machine Info\n  uses: ./actions/some-other-action\n  with:\n    config: ${{ steps.machine.outputs.config }}"
+      "example": "- name: Get Machine Info\n  id: machine\n  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main\n  with:\n    config: .env\n\n- name: Use Machine Info\n  uses: KontangoOSS/KONOSS/OPS/actions/some-other-action@main\n  with:\n    config: ${{ steps.machine.outputs.config }}"
     },
     "standalone": {
-      "description": "Just collect info without saving",
-      "example": "- name: Get Machine Info\n  uses: ./actions/get-machine-info"
+      "description": "Just collect info without config file",
+      "example": "- name: Get Machine Info\n  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main"
     }
   },
 

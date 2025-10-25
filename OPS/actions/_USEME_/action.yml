@@ -1,0 +1,79 @@
+name: '_USEME_ Template Action'
+description: 'Production-ready template for self-contained actions with unified config management, secure logging, and KONOSS branding'
+author: 'Kontango Limited'
+
+inputs:
+  config:
+    description: 'Configuration file (.env, .json, or .txt)'
+    required: false
+    default: '.env'
+outputs:
+  config:
+    description: 'Updated configuration file (for chaining actions)'
+    value: ${{inputs.config}}
+
+runs:
+  using: 'composite'
+  steps:
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 1: VALIDATE & LOAD CONFIG                                       ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ DO NOT EDIT - Automatically validates and loads your config file     ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Validate and load configuration
+      shell: bash
+      run: |
+        CONFIG="${{inputs.config}}"
+        ACTION_DIR="$(dirname "$GITHUB_ACTION_PATH")"
+
+        # Unified process: check deps, load config, validate, export variables
+        source "$ACTION_DIR/scripts/load-and-validate.sh" "$CONFIG"
+
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 2: YOUR ACTION LOGIC                                            ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ EDIT BELOW - Add your custom action code between the markers         ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Execute action logic
+      id: execute
+      shell: bash
+      run: |
+        # ┌─────────────────────────────────────────────────────────────────┐
+        # │ All config variables are loaded and validated from Step 1      │
+        # │ They are available as environment variables                    │
+        # │                                                                 │
+        # │ READ variables:    echo "Host: $PROXMOX_HOST"                  │
+        # │ UPDATE variables:  export PROXMOX_HOST="new-value"             │
+        # │ ADD variables:     export NEW_VAR="value"                      │
+        # └─────────────────────────────────────────────────────────────────┘
+
+        echo "🔧 Running action..."
+
+        # ╔═══════════════════════════════════════════════════════════════╗
+        # ║                                                               ║
+        # ║                    ✏️  EDIT YOUR CODE HERE                    ║
+        # ║                                                               ║
+        # ╚═══════════════════════════════════════════════════════════════╝
+
+        # Example: echo "VMID: $VMID"
+        # Example: export STATUS="completed"
+
+        # ╔═══════════════════════════════════════════════════════════════╗
+        # ║                                                               ║
+        # ║                    ✏️  END OF YOUR CODE                       ║
+        # ║                                                               ║
+        # ╚═══════════════════════════════════════════════════════════════╝
+
+        echo "✅ Action completed"
+
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 3: SAVE CONFIG                                                  ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ DO NOT EDIT - Automatically saves all variables back to config       ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Save configuration
+      shell: bash
+      run: |
+        CONFIG="${{inputs.config}}"
+        ACTION_DIR="$(dirname "$GITHUB_ACTION_PATH")"
+        "$ACTION_DIR/scripts/save-config.sh" "$CONFIG"
