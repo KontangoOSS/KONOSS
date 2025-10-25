@@ -33,18 +33,24 @@ A simple, self-contained action that collects current machine/system information
 
 ### From GitHub (Recommended)
 
-Use the action directly from GitHub:
+Use the action from GitHub by checking out the repository first:
 
 ```yaml
+- name: Checkout KONOSS
+  uses: actions/checkout@v4
+  with:
+    repository: KontangoOSS/KONOSS
+    ref: main
+
 - name: Get Machine Info
-  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+  uses: ./OPS/actions/get-machine-info
   with:
     config: machine-info.env
 ```
 
 ### From Local Repository
 
-If you've cloned the repository:
+If you're already in the KONOSS repository:
 
 ```yaml
 - name: Get Machine Info
@@ -58,27 +64,39 @@ If you've cloned the repository:
 Collect machine info and use it in subsequent actions:
 
 ```yaml
+- name: Checkout KONOSS
+  uses: actions/checkout@v4
+  with:
+    repository: KontangoOSS/KONOSS
+    ref: main
+
 - name: Collect Machine Info
   id: machine
-  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+  uses: ./OPS/actions/get-machine-info
   with:
     config: .env
 
-- name: Deploy with Machine Context
-  uses: KontangoOSS/KONOSS/OPS/actions/deploy-app@main
-  with:
-    config: ${{ steps.machine.outputs.config }}
+- name: Use Machine Context
+  run: |
+    source ${{ steps.machine.outputs.config }}
+    echo "Running on: $MACHINE_HOSTNAME"
 ```
 
-The second action will have access to all `MACHINE_*` variables.
+The subsequent steps will have access to all `MACHINE_*` variables.
 
 ### Standalone (No Config File)
 
 Just collect and display the info:
 
 ```yaml
+- name: Checkout KONOSS
+  uses: actions/checkout@v4
+  with:
+    repository: KontangoOSS/KONOSS
+    ref: main
+
 - name: Show Machine Info
-  uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+  uses: ./OPS/actions/get-machine-info
 ```
 
 Variables are still exported for use in the same workflow.

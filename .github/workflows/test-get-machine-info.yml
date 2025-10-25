@@ -18,9 +18,15 @@ jobs:
     name: Test from GitHub
     runs-on: ubuntu-latest
     steps:
-      - name: Get Machine Info (from GitHub)
+      - name: Checkout KONOSS repository
+        uses: actions/checkout@v4
+        with:
+          repository: KontangoOSS/KONOSS
+          ref: main
+
+      - name: Get Machine Info (from GitHub checkout)
         id: machine
-        uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+        uses: ./OPS/actions/get-machine-info
         with:
           config: machine-info.env
 
@@ -97,9 +103,15 @@ jobs:
     name: Test Action Chaining
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout KONOSS repository
+        uses: actions/checkout@v4
+        with:
+          repository: KontangoOSS/KONOSS
+          ref: main
+
       - name: Collect Machine Info
         id: machine
-        uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+        uses: ./OPS/actions/get-machine-info
         with:
           config: base-config.env
 
@@ -126,8 +138,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, ubuntu-22.04, ubuntu-20.04]
     steps:
+      - name: Checkout KONOSS repository
+        uses: actions/checkout@v4
+        with:
+          repository: KontangoOSS/KONOSS
+          ref: main
+
       - name: Get Machine Info
-        uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+        uses: ./OPS/actions/get-machine-info
         with:
           config: machine-${{ matrix.os }}.env
 
@@ -142,8 +160,14 @@ jobs:
     name: Test Without Config File
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout KONOSS repository
+        uses: actions/checkout@v4
+        with:
+          repository: KontangoOSS/KONOSS
+          ref: main
+
       - name: Get Machine Info (no config)
-        uses: KontangoOSS/KONOSS/OPS/actions/get-machine-info@main
+        uses: ./OPS/actions/get-machine-info
 
       - name: Verify variables are still exported
         run: |
