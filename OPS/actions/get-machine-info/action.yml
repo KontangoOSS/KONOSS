@@ -1,0 +1,143 @@
+name: 'Get Machine Info'
+description: 'Collects current machine/system information including hostname, OS, memory, CPU, and disk usage'
+author: 'Kontango Limited'
+
+inputs:
+  config:
+    description: 'Configuration file (.env, .json, or .txt)'
+    required: false
+    default: '.env'
+outputs:
+  config:
+    description: 'Updated configuration file (for chaining actions)'
+    value: ${{inputs.config}}
+
+runs:
+  using: 'composite'
+  steps:
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 1: VALIDATE & LOAD CONFIG                                       ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ DO NOT EDIT - Automatically validates and loads your config file     ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Validate and load configuration
+      shell: bash
+      run: |
+        CONFIG="${{inputs.config}}"
+        ACTION_DIR="$(dirname "$GITHUB_ACTION_PATH")"
+
+        # Unified process: check deps, load config, validate, export variables
+        source "$ACTION_DIR/scripts/load-and-validate.sh" "$CONFIG"
+
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 2: YOUR ACTION LOGIC                                            ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ EDIT BELOW - Add your custom action code between the markers         ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Execute action logic
+      id: execute
+      shell: bash
+      run: |
+        # ┌─────────────────────────────────────────────────────────────────┐
+        # │ All config variables are loaded and validated from Step 1      │
+        # │ They are available as environment variables                    │
+        # │                                                                 │
+        # │ READ variables:    echo "Host: $PROXMOX_HOST"                  │
+        # │ UPDATE variables:  export PROXMOX_HOST="new-value"             │
+        # │ ADD variables:     export NEW_VAR="value"                      │
+        # └─────────────────────────────────────────────────────────────────┘
+
+        echo "🔧 Collecting machine information..."
+
+        # ╔═══════════════════════════════════════════════════════════════╗
+        # ║                                                               ║
+        # ║                    ✏️  EDIT YOUR CODE HERE                    ║
+        # ║                                                               ║
+        # ╚═══════════════════════════════════════════════════════════════╝
+
+        # Collect machine information
+        export MACHINE_HOSTNAME=$(hostname)
+        export MACHINE_OS=$(uname -s)
+        export MACHINE_KERNEL=$(uname -r)
+        export MACHINE_ARCH=$(uname -m)
+
+        # Get CPU info
+        if [ -f /proc/cpuinfo ]; then
+            export MACHINE_CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
+            export MACHINE_CPU_MODEL=$(grep "model name" /proc/cpuinfo | head -1 | cut -d: -f2 | xargs)
+        else
+            export MACHINE_CPU_COUNT=$(sysctl -n hw.ncpu 2>/dev/null || echo "unknown")
+            export MACHINE_CPU_MODEL=$(sysctl -n machdep.cpu.brand_string 2>/dev/null || echo "unknown")
+        fi
+
+        # Get memory info
+        if [ -f /proc/meminfo ]; then
+            MACHINE_MEM_TOTAL_KB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+            export MACHINE_MEM_TOTAL_GB=$(( MACHINE_MEM_TOTAL_KB / 1024 / 1024 ))
+            MACHINE_MEM_AVAIL_KB=$(grep MemAvailable /proc/meminfo | awk '{print $2}')
+            export MACHINE_MEM_AVAILABLE_GB=$(( MACHINE_MEM_AVAIL_KB / 1024 / 1024 ))
+        else
+            MACHINE_MEM_TOTAL_BYTES=$(sysctl -n hw.memsize 2>/dev/null || echo "0")
+            export MACHINE_MEM_TOTAL_GB=$(( MACHINE_MEM_TOTAL_BYTES / 1024 / 1024 / 1024 ))
+            export MACHINE_MEM_AVAILABLE_GB="unknown"
+        fi
+
+        # Get disk usage for root partition
+        export MACHINE_DISK_USAGE=$(df -h / | tail -1 | awk '{print $5}')
+        export MACHINE_DISK_AVAILABLE=$(df -h / | tail -1 | awk '{print $4}')
+
+        # Get uptime
+        export MACHINE_UPTIME=$(uptime -p 2>/dev/null || uptime | awk '{print $3,$4}')
+
+        # Get IP address (primary non-loopback)
+        if command -v ip &> /dev/null; then
+            export MACHINE_IP=$(ip route get 1 2>/dev/null | grep -oP 'src \K\S+' || echo "unknown")
+        elif command -v ifconfig &> /dev/null; then
+            export MACHINE_IP=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | head -1 | awk '{print $2}')
+        else
+            export MACHINE_IP="unknown"
+        fi
+
+        # Timestamp
+        export MACHINE_INFO_TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+        echo ""
+        echo "╔════════════════════════════════════════════════════════════╗"
+        echo "║           Machine Information Summary                     ║"
+        echo "╚════════════════════════════════════════════════════════════╝"
+        echo ""
+        echo "  Hostname:       $MACHINE_HOSTNAME"
+        echo "  IP Address:     $MACHINE_IP"
+        echo "  OS:             $MACHINE_OS"
+        echo "  Kernel:         $MACHINE_KERNEL"
+        echo "  Architecture:   $MACHINE_ARCH"
+        echo "  CPU:            $MACHINE_CPU_MODEL"
+        echo "  CPU Cores:      $MACHINE_CPU_COUNT"
+        echo "  Memory Total:   ${MACHINE_MEM_TOTAL_GB}GB"
+        echo "  Memory Avail:   ${MACHINE_MEM_AVAILABLE_GB}GB"
+        echo "  Disk Usage:     $MACHINE_DISK_USAGE"
+        echo "  Disk Avail:     $MACHINE_DISK_AVAILABLE"
+        echo "  Uptime:         $MACHINE_UPTIME"
+        echo "  Collected:      $MACHINE_INFO_TIMESTAMP"
+        echo ""
+        echo "════════════════════════════════════════════════════════════"
+
+        # ╔═══════════════════════════════════════════════════════════════╗
+        # ║                                                               ║
+        # ║                    ✏️  END OF YOUR CODE                       ║
+        # ║                                                               ║
+        # ╚═══════════════════════════════════════════════════════════════╝
+
+        echo "✅ Machine information collected successfully"
+
+    # ╔═══════════════════════════════════════════════════════════════════════╗
+    # ║ STEP 3: SAVE CONFIG                                                  ║
+    # ║ ───────────────────────────────────────────────────────────────────── ║
+    # ║ DO NOT EDIT - Automatically saves all variables back to config       ║
+    # ╚═══════════════════════════════════════════════════════════════════════╝
+    - name: Save configuration
+      shell: bash
+      run: |
+        CONFIG="${{inputs.config}}"
+        ACTION_DIR="$(dirname "$GITHUB_ACTION_PATH")"
+        "$ACTION_DIR/scripts/save-config.sh" "$CONFIG"

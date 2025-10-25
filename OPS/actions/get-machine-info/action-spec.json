@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "Get Machine Info",
+  "description": "Collects current machine/system information and exports it to config variables",
+  "version": "1.0.0",
+  "author": "Kontango Limited",
+  "documentation": "https://kontango.gitbook.io/kontango",
+  "repository": "https://github.com/KontangoOSS",
+
+  "inputs": {
+    "config": {
+      "description": "Configuration file path (.env, .json, or .txt)",
+      "required": false,
+      "default": ".env",
+      "type": "string"
+    }
+  },
+
+  "outputs": {
+    "config": {
+      "description": "Updated configuration file path with machine info variables (for chaining actions)",
+      "type": "string"
+    }
+  },
+
+  "config_schema": {
+    "description": "Configuration file validation - no required fields, all machine info is collected automatically",
+    "fields": {},
+    "note": "This action collects machine info and exports it - no input config fields required"
+  },
+
+  "exported_variables": {
+    "description": "Variables exported by this action (available in config after execution)",
+    "fields": {
+      "MACHINE_HOSTNAME": "The system hostname",
+      "MACHINE_OS": "Operating system name (Linux, Darwin, etc.)",
+      "MACHINE_KERNEL": "Kernel version",
+      "MACHINE_ARCH": "System architecture (x86_64, arm64, etc.)",
+      "MACHINE_CPU_COUNT": "Number of CPU cores",
+      "MACHINE_CPU_MODEL": "CPU model name",
+      "MACHINE_MEM_TOTAL_GB": "Total memory in GB",
+      "MACHINE_MEM_AVAILABLE_GB": "Available memory in GB",
+      "MACHINE_DISK_USAGE": "Root partition disk usage percentage",
+      "MACHINE_DISK_AVAILABLE": "Available disk space on root partition",
+      "MACHINE_UPTIME": "System uptime",
+      "MACHINE_IP": "Primary IP address",
+      "MACHINE_INFO_TIMESTAMP": "When the information was collected (UTC)"
+    }
+  },
+
+  "dependencies": {
+    "description": "System packages required (most are standard on all Unix-like systems)",
+    "packages": [
+      "bash",
+      "coreutils"
+    ],
+    "note": "Uses standard Unix utilities available on all systems"
+  },
+
+  "usage": {
+    "basic": {
+      "description": "Collect machine info and save to .env file",
+      "example": "- name: Get Machine Info\n  uses: ./actions/get-machine-info\n  with:\n    config: machine-info.env"
+    },
+    "chaining": {
+      "description": "Collect machine info then use in another action",
+      "example": "- name: Get Machine Info\n  id: machine\n  uses: ./actions/get-machine-info\n  with:\n    config: .env\n\n- name: Use Machine Info\n  uses: ./actions/some-other-action\n  with:\n    config: ${{ steps.machine.outputs.config }}"
+    },
+    "standalone": {
+      "description": "Just collect info without saving",
+      "example": "- name: Get Machine Info\n  uses: ./actions/get-machine-info"
+    }
+  },
+
+  "self_contained": {
+    "description": "Checklist to ensure action is completely self-contained and reusable",
+    "checklist": [
+      "All scripts copied to scripts/ folder",
+      "No external dependencies beyond standard Unix utilities",
+      "All dependencies listed in dependencies.packages array",
+      "Works on Linux and macOS",
+      "Action works when folder is copied standalone"
+    ]
+  },
+
+  "notes": [
+    "This action collects machine information and exports it as environment variables",
+    "No input configuration required - all data is collected automatically",
+    "All collected variables are saved to the config file for use in later actions",
+    "Works on Linux and macOS (with graceful fallbacks)",
+    "IP address detection attempts multiple methods for compatibility",
+    "Memory info may be 'unknown' on some systems if not available"
+  ]
+}

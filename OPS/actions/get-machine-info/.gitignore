@@ -1,0 +1,8 @@
+# Exclude secure audit logs from git
+.logs/
+*.log
+
+# Exclude test files
+test-*.env
+test-*.json
+test-*.txt
