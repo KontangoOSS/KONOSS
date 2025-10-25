@@ -31,9 +31,23 @@ jobs:
 
     steps:
       - name: Checkout repository
+        id: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Log checkout completion
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📥 Repository Checkout Complete"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Repository Information:"
+          echo "  ├─ Repository: ${{ github.repository }}"
+          echo "  ├─ Branch: ${{ github.ref_name }}"
+          echo "  ├─ Commit: ${{ github.sha }}"
+          echo "  └─ Fetch Depth: 1"
+          echo ""
 
       - name: Run KONOSS health check action
         id: health
@@ -41,3 +55,46 @@ jobs:
         with:
           message: ${{ inputs.custom-message }}
           show-system-info: ${{ inputs.show-system-info }}
+
+      - name: Display action outputs
+        if: always()
+        run: |
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📤 Health Check Action Outputs"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Outputs:"
+          echo "  ├─ Status: ${{ steps.health.outputs.status }}"
+          echo "  └─ Timestamp: ${{ steps.health.outputs.timestamp }}"
+          echo ""
+          echo "Inputs:"
+          echo "  ├─ Message: ${{ inputs.custom-message }}"
+          echo "  └─ Show System Info: ${{ inputs.show-system-info }}"
+          echo ""
+
+      - name: Workflow summary
+        if: always()
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "📋 Reusable Workflow Summary"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "Context:"
+          echo "  ├─ Workflow: ${{ github.workflow }}"
+          echo "  ├─ Run #: ${{ github.run_number }}"
+          echo "  ├─ Triggered By: ${{ github.actor }}"
+          echo "  └─ Event: ${{ github.event_name }}"
+          echo ""
+          echo "Result:"
+
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "  └─ Status: ✅ SUCCESS"
+          else
+            echo "  └─ Status: ❌ FAILED"
+          fi
+
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "🎯 KONOSS Platform | https://konoss.org"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
