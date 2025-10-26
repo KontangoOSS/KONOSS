@@ -1,7 +1,0 @@
-{
-  "_comment": "Example JSON Configuration File - Fields are validated against action-spec.json (config_schema.fields)",
-  "_note": "To customize: Update action-spec.json with your fields, then update this example to match",
-  "EXAMPLE_FIELD": "example_value_here",
-  "ANOTHER_FIELD": "another_value_here",
-  "OPTIONAL_FIELD": "optional_value_here"
-}

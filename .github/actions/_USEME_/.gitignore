@@ -1,7 +1,0 @@
-# Secure logs (may contain variable names)
-.logs/
-
-# Test files
-test*.env
-test*.json
-test*.txt
