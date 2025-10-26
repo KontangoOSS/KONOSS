@@ -42,6 +42,20 @@
 ## 🚀 Active Projects
 *Production-ready projects currently in use and actively maintained*
 
+### 🏢 AUTOMOX Main
+**Status:** `Live` | **Type:** `Modular Devops Components` | **Platform:** `Self-Hosted Open Source`  
+
+Automox is the core project on which Kontango is working in 2025. The project is dedeicated to making deployments of applications simple for ends users regardless of their skill level. The idea is to use Proxmox to allow small business owners to manage their own software stack so they can take back the money they spend on software as a service. 
+
+- **Impact:** Reducing operational costs
+- **Technology Stack:** 
+  - **Infrastructure:** Proxmox
+  - **GitOps:** GITEA
+  - **Monitoring:** NA
+  - **CI/CD:** Gitea Actions
+  - **Database:** PostgreSQL, Redis
+  - **Web:** HUGO, Caddy
+
 ### 🏢 EEBCO Main
 **Status:** `Live` | **Type:** `Infrastructure Migration` | **Platform:** `Self-Hosted Open Source`  
 Migrating the entire Energy Efficiency Building Council Organization (EEBCO) non-profit platform from expensive SaaS solutions to a self-hosted Kubernetes cluster using 100% open source technologies. Implementing GitOps/DevOps practices with the KONOSS platform for complete infrastructure autonomy.
